@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiApp24.MainPage"
+             BackgroundColor="#1E1E1E"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="15" RowSpacing="15">
+
+        <Label Grid.Row="0" 
+               Text="📑 Звіт про програмне забезпечення" 
+               FontSize="22" 
+               FontAttributes="Bold" 
+               TextColor="#748aa6"
+               FontFamily="MyCustomFont"
+               HorizontalOptions="Center"/>
+
+        <Frame Grid.Row="1" 
+               Padding="10" 
+               BorderColor="#404040" 
+               BackgroundColor="#2D2D2D"
+               CornerRadius="12"
+               HasShadow="True">
+
+            <VerticalStackLayout Spacing="10">
+
+                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                    <HorizontalStackLayout Grid.Column="0" Spacing="10" VerticalOptions="Center">
+                        <Label Text="Джерело:" TextColor="#B0BEC5" VerticalOptions="Center" FontFamily="MyCustomFont" FontSize="12"/>
+                        <RadioButton x:Name="RbLocal" Content="💻 Локально" IsChecked="True" GroupName="Source" TextColor="#E0E0E0" FontFamily="MyCustomFont" FontSize="12"/>
+                        <RadioButton x:Name="RbDrive" Content="☁️ Drive" GroupName="Source" TextColor="#E0E0E0" FontFamily="MyCustomFont" FontSize="12"/>
+                    </HorizontalStackLayout>
+
+                    <Entry x:Name="DriveFileNameEntry" 
+                           Grid.Column="1"
+                           Placeholder="📄 Назва (data.xml)" 
+                           IsVisible="{Binding Source={x:Reference RbDrive}, Path=IsChecked}"
+                           BackgroundColor="#1E1E1E"
+                           TextColor="White"
+                           PlaceholderColor="Gray"
+                           HeightRequest="38"
+                           FontSize="12"
+                           FontFamily="MyCustomFont"/>
+
+                    <Button Grid.Column="2"
+                            Text="📥 Завантажити" 
+                            Clicked="OnLoadClicked" 
+                            BackgroundColor="#748aa6" 
+                            TextColor="White" 
+                            FontSize="12" 
+                            FontAttributes="Bold" 
+                            CornerRadius="8"
+                            HeightRequest="38"
+                            FontFamily="MyCustomFont"/>
+                </Grid>
+
+                <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto" ColumnSpacing="5">
+
+                    <Border Grid.Column="0" Stroke="#404040" StrokeThickness="1" StrokeShape="RoundRectangle 8" BackgroundColor="#1E1E1E" Padding="0">
+                        <Picker x:Name="StrategyPicker" Title="⚙️ Метод" TextColor="#6c5f87" TitleColor="Gray" FontSize="11" HorizontalTextAlignment="Center" WidthRequest="150" FontFamily="MyCustomFont">
+                            <Picker.Items>
+                                <x:String>LINQ to XML</x:String>
+                                <x:String>SAX API</x:String>
+                                <x:String>DOM API</x:String>
+                            </Picker.Items>
+                            <Picker.SelectedIndex>0</Picker.SelectedIndex>
+                        </Picker>
+                    </Border>
+
+                    <Entry x:Name="SearchEntry" 
+                           Grid.Column="1"
+                           Placeholder="🔍 Пошук..." 
+                           BackgroundColor="#1E1E1E"
+                           TextColor="White"
+                           PlaceholderColor="Gray"
+                           FontSize="13"
+                           HeightRequest="40"
+                           FontFamily="MyCustomFont"/>
+
+                    <Border Grid.Column="2" Stroke="#404040" StrokeThickness="1" StrokeShape="RoundRectangle 8" BackgroundColor="#1E1E1E" Padding="0">
+                        <Picker x:Name="AttributePicker" Title="🏷️ Атрибут" TextColor="#6c5f87" TitleColor="Gray" FontSize="11" HorizontalTextAlignment="Center" WidthRequest="120" FontFamily="MyCustomFont">
+                            <Picker.Items>
+                                <x:String>Назва</x:String>
+                                <x:String>Автор</x:String>
+                                <x:String>Тип</x:String>
+                                <x:String>Анотація</x:String>
+                            </Picker.Items>
+                            <Picker.SelectedIndex>0</Picker.SelectedIndex>
+                        </Picker>
+                    </Border>
+
+                    <Button Grid.Column="3" Text="🔎" Clicked="OnSearchClicked" BackgroundColor="#748aa6" TextColor="White" WidthRequest="40" HeightRequest="40" CornerRadius="8" FontFamily="MyCustomFont" FontSize="16" Padding="0"/>
+
+                    <Button Grid.Column="4" Text="❌" Clicked="OnClearClicked" BackgroundColor="#9b9fb0" TextColor="White" WidthRequest="40" HeightRequest="40" CornerRadius="8" FontFamily="MyCustomFont" FontSize="14" Padding="0"/>
+                </Grid>
+
+            </VerticalStackLayout>
+        </Frame>
+
+        <CollectionView x:Name="SoftwareCollectionView" Grid.Row="2">
+            <CollectionView.EmptyView>
+                <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="10">
+                    <Label Text="📭" FontSize="40" HorizontalOptions="Center"/>
+                    <Label Text="Дані відсутні" TextColor="Gray" HorizontalOptions="Center" FontFamily="MyCustomFont"/>
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="0,0,0,10">
+                        <Frame CornerRadius="10" BackgroundColor="#2D2D2D" BorderColor="#404040" Padding="12" HasShadow="True">
+                            <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto">
+                                <Label Grid.Row="0" Grid.Column="0" Text="{Binding FullName}" FontSize="16" FontAttributes="Bold" TextColor="#748aa6" FontFamily="MyCustomFont"/>
+
+                                <Border Grid.Row="0" Grid.Column="1" Stroke="Transparent" BackgroundColor="#37474F" StrokeShape="RoundRectangle 5" Padding="6,2" VerticalOptions="Start">
+                                    <Label Text="{Binding Type}" TextColor="#748aa6" FontSize="10" FontAttributes="Bold" FontFamily="MyCustomFont"/>
+                                </Border>
+
+                                <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Details}" FontSize="12" TextColor="#B0BEC5" Margin="0,2,0,6" FontFamily="MyCustomFont"/>
+
+                                <VerticalStackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Spacing="2">
+                                    <Label Text="{Binding Annotation}" FontSize="13" TextColor="#E0E0E0" LineBreakMode="TailTruncation" FontFamily="MyCustomFont"/>
+                                    <Label Text="{Binding StringFormat='📍 {0}', Path=Location}" FontSize="11" TextColor="#9b9fb0" FontAttributes="Italic" FontFamily="MyCustomFont"/>
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Frame>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Grid Grid.Row="3" ColumnDefinitions="*,*,*" ColumnSpacing="15">
+            <Button Text="💾 HTML" 
+                    Clicked="OnSaveHtmlClicked" 
+                    Grid.Column="0" 
+                    BackgroundColor="#6c5f87" 
+                    TextColor="White" 
+                    CornerRadius="20" 
+                    FontAttributes="Bold"
+                    FontFamily="MyCustomFont"/>
+
+            <Button Text="☁️ Drive" 
+                    Clicked="OnSaveDriveClicked" 
+                    Grid.Column="1" 
+                    BackgroundColor="#748aa6" 
+                    TextColor="White" 
+                    CornerRadius="20" 
+                    FontAttributes="Bold"
+                    FontFamily="MyCustomFont"/>
+
+            <Button Text="🚪 Вихід" 
+                    Clicked="OnExitClicked" 
+                    Grid.Column="2" 
+                    BackgroundColor="#9b9fb0" 
+                    TextColor="White" 
+                    CornerRadius="20" 
+                    FontAttributes="Bold"
+                    FontFamily="MyCustomFont"/>
+        </Grid>
+
+    </Grid>
+</ContentPage>
